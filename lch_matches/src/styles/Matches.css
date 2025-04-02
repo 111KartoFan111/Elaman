@@ -1,0 +1,25 @@
+.matches-page {
+    background-color: var(--dark-navy);
+  }
+  
+  .match-item {
+    background-color: rgba(48, 102, 190, 0.2);
+    border: 1px solid var(--bright-blue);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.4s ease;
+  }
+  
+  .match-item:hover {
+    transform: translateX(10px);
+    box-shadow: 0 10px 20px rgba(255, 107, 53, 0.2);
+  }
+  
+  .team-name {
+    font-weight: bold;
+    color: var(--white);
+  }
+  .versus{
+    left: 75px;
+  }

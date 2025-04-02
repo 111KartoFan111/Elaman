@@ -1,0 +1,247 @@
+.prediction-form-container {
+  background-color: rgba(48, 102, 190, 0.15);
+  border-radius: 16px;
+  padding: 25px;
+  border: 1px solid var(--bright-blue);
+  box-shadow: 0 8px 20px rgba(10, 35, 66, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.prediction-form-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(10, 35, 66, 0.25);
+}
+
+.prediction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.score-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.team-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.team-score label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 5px;
+  text-align: center;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.team-score input {
+  background-color: rgba(10, 35, 66, 0.4);
+  border: 2px solid var(--bright-blue);
+  color: var(--white);
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.team-score input:focus {
+  border-color: var(--vibrant-orange);
+  transform: scale(1.05);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3), inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.score-separator {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--bright-blue);
+  margin: 0 5px;
+  padding-top: 35px;
+}
+
+.comment-input {
+  margin-top: 10px;
+}
+
+.comment-input label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--white);
+}
+
+.comment-input textarea {
+  width: 100%;
+  background-color: rgba(10, 35, 66, 0.4);
+  border: 2px solid var(--bright-blue);
+  color: var(--white);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 0.95rem;
+  resize: vertical;
+  min-height: 80px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.comment-input textarea:focus {
+  border-color: var(--vibrant-orange);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2), inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.submit-btn {
+  background-color: var(--vibrant-orange);
+  color: var(--dark-navy);
+  border: none;
+  border-radius: 30px;
+  padding: 12px 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+}
+
+.submit-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 15px rgba(255, 107, 53, 0.4);
+}
+
+.submit-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(255, 107, 53, 0.4);
+}
+
+.submit-btn:disabled {
+  background-color: rgba(255, 107, 53, 0.5);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: var(--white);
+  border: 2px solid var(--white);
+  border-radius: 30px;
+  padding: 12px 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px);
+}
+
+.cancel-btn:active {
+  transform: translateY(-1px);
+}
+
+/* Стили для существующего прогноза */
+.existing-prediction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.prediction-score {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: rgba(10, 35, 66, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.team-short {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--white);
+}
+
+.score {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--vibrant-orange);
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.prediction-comment {
+  background-color: rgba(10, 35, 66, 0.3);
+  border-radius: 12px;
+  padding: 12px 20px;
+  width: 100%;
+  margin-top: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.prediction-comment p {
+  font-style: italic;
+  color: var(--white);
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.edit-prediction-btn {
+  background-color: var(--bright-blue);
+  color: var(--white);
+  border: none;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  box-shadow: 0 4px 8px rgba(48, 102, 190, 0.3);
+}
+
+.edit-prediction-btn:hover {
+  background-color: var(--vibrant-orange);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 15px rgba(255, 107, 53, 0.3);
+}
+
+/* Стили для состояния не вошедшего пользователя */
+.not-logged-in {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.not-logged-in p {
+  color: var(--white);
+  opacity: 0.8;
+  font-size: 1.1rem;
+  margin: 0;
+}

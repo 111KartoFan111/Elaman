@@ -1,0 +1,47 @@
+.hero-section {
+    background: linear-gradient(135deg, var(--dark-navy), var(--bright-blue));
+    color: var(--white);
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+    top: 15px;
+  }
+  
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('path/to/stadium-texture.png');
+    opacity: 0.1;
+    z-index: 1;
+  }
+  
+  .match-card {
+    background-color: rgba(48, 102, 190, 0.2);
+    border: 1px solid rgba(255, 107, 53, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.4s ease;
+    transform-origin: center;
+    height: 170px;
+  }
+  
+  .match-card:hover {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 15px 30px rgba(255, 107, 53, 0.3);
+  }
+
+  @media screen and (max-width: 430px) and (max-height: 932px) {
+    .predict-button {
+        position: relative;
+        top: 40px;
+        margin-bottom: 60px;
+    }
+    .versus {
+        position: relative;
+        left: px; /* Используйте одинаковое значение для обеих страниц */
+    }
+}

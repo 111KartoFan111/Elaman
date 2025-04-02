@@ -1,0 +1,47 @@
+.predictions-page {
+    background-color: var(--dark-navy);
+  }
+  
+  .predictions-container {
+    background-color: rgba(48, 102, 190, 0.1);
+    border-radius: 15px;
+    padding: 30px;
+  }
+  
+  .match-prediction-item {
+    background-color: rgba(10, 35, 66, 0.5);
+    border: 1px solid var(--bright-blue);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.4s ease;
+  }
+  
+  .match-prediction-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 15px 30px rgba(255, 107, 53, 0.2);
+  }
+  
+  .predict-button {
+    background-color: var(--vibrant-orange);
+    color: var(--dark-navy);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    
+  }
+
+  .match-actions{
+    margin-top: 15px;
+  }
+  
+  .predict-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+  }
+
+  .match-info{
+    margin-top: 30px;
+  }

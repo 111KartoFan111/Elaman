@@ -1,0 +1,33 @@
+@import './buttons.css';
+
+:root {
+  --dark-navy: #0A2342;
+  --bright-blue: #3066BE;
+  --vibrant-orange: #FF6B35;
+  --white: #FFFFFF;
+  --cool-gray: #4F5D75;
+}
+
+body {
+  font-family: 'Rubik', 'Roboto', sans-serif;
+  background-color: var(--dark-navy);
+  color: var(--white);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}

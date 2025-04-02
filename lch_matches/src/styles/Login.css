@@ -1,0 +1,219 @@
+:root {
+  --dark-navy: #0a2342;
+  --bright-blue: #00aaff;
+  --vibrant-orange: #ff6b35;
+  --white: #ffffff;
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --error-red: #ff4d4d;
+}
+
+/* Общий контейнер страницы */
+.auth-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--dark-navy) 0%, var(--bright-blue) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Контейнер формы */
+.auth-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+
+.auth-box {
+  background: rgba(48, 102, 190, 0.25);
+  border: 1px solid var(--vibrant-orange);
+  border-radius: 20px;
+  padding: 30px 20px;
+  width: 100%;
+  max-width: 480px;
+  backdrop-filter: blur(12px) saturate(120%);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 40px;
+}
+
+.auth-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+
+.auth-box h1 {
+  color: var(--white);
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+
+.error-message {
+  color: var(--error-red);
+  background: rgba(255, 77, 77, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Поля ввода */
+.auth-input {
+  background: rgba(10, 35, 66, 0.6);
+  border: 2px solid var(--bright-blue);
+  border-radius: 8px;
+  color: var(--white);
+  padding: 12px 15px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-input:focus {
+  border-color: var(--vibrant-orange);
+  box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+  outline: none;
+}
+
+/* Кнопка */
+.auth-button {
+  background: var(--vibrant-orange);
+  color: var(--dark-navy);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.auth-button:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(255, 107, 53, 0.4);
+  background: #ff8c5a;
+}
+
+.auth-button:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+}
+
+.auth-button:disabled {
+  background: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Ссылки */
+.auth-links {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.auth-links p {
+  color: var(--white);
+  font-size: 14px;
+}
+
+.auth-links a {
+  color: var(--vibrant-orange);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+  color: #ff8c5a;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .auth-box {
+    max-width: 400px;
+    padding: 25px 15px;
+  }
+
+  .auth-box h1 {
+    font-size: 24px;
+  }
+
+  .auth-input {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .auth-button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 15px;
+  }
+
+  .auth-box {
+    max-width: 100%;
+    padding: 20px 10px;
+  }
+
+  .auth-box h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .auth-form {
+    gap: 15px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+
+  .auth-input {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .auth-button {
+    font-size: 13px;
+    padding: 8px 15px;
+  }
+
+  .auth-links p {
+    font-size: 12px;
+  }
+}
