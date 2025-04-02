@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PredictionForm from '../components/PredictionForm';
+import SyncService from '../utils/SyncService';
+import LoginTesting from '../utils/LoginTesting';
 import '../styles/Predictions.css';
 
 const Predictions = () => {
@@ -11,144 +13,140 @@ const Predictions = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [syncStatus, setSyncStatus] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Проверка авторизации пользователя
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      setIsLoggedIn(false);
-    } else {
-      setIsLoggedIn(true);
-      fetchUserPredictions();
-    }
-
-    // Загрузка предстоящих матчей
-    fetchUpcomingMatches();
+    // Инициализация компонента
+    initComponent();
   }, []);
 
-  // Получение предстоящих матчей
-  const fetchUpcomingMatches = async () => {
+  // Инициализация компонента
+  const initComponent = async () => {
+    // Проверка авторизации
+    const isAuth = await LoginTesting.checkAuth();
+    setIsLoggedIn(isAuth);
+    
+    // Загружаем данные
+    loadData(isAuth);
+  };
+
+  // Загрузка всех необходимых данных
+  const loadData = async (isAuthenticated) => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/matches/upcoming-matches');
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      // Загрузка матчей
+      const matches = await SyncService.fetchMatches();
+      setUpcomingMatches(matches);
+      
+      // Если пользователь авторизован, загружаем его прогнозы
+      if (isAuthenticated) {
+        const predictions = await SyncService.fetchUserPredictions();
+        setUserPredictions(predictions);
       }
       
-      const data = await response.json();
-      setUpcomingMatches(data);
       setLoading(false);
     } catch (err) {
-      setError(err.message);
+      setError('Ошибка загрузки данных: ' + err.message);
       setLoading(false);
     }
   };
 
-  // Получение прогнозов пользователя
-  const fetchUserPredictions = async () => {
+  // Синхронизация данных с сервером
+  const syncData = async () => {
+    if (!isLoggedIn) {
+      alert('Для синхронизации необходимо войти в систему');
+      return;
+    }
+    
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:5000/api/predictions/predictions?match_status=upcoming', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      setIsSyncing(true);
+      setSyncStatus({ message: 'Проверка соединения...' });
       
-      if (!response.ok) {
-        if (response.status === 401) {
-          // Если токен истек, разлогиниваем пользователя
-          localStorage.removeItem('access_token');
-          setIsLoggedIn(false);
-          return;
-        }
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      // Проверяем соединение
+      const isConnected = await SyncService.checkConnection();
+      
+      if (!isConnected) {
+        setSyncStatus({ 
+          success: false, 
+          message: 'Нет соединения с сервером. Синхронизация невозможна.' 
+        });
+        return;
       }
       
-      const data = await response.json();
+      setSyncStatus({ message: 'Синхронизация данных...' });
       
-      // Преобразуем массив прогнозов в объект для удобного доступа по match_id
-      const predictionsMap = {};
-      data.forEach(prediction => {
-        predictionsMap[prediction.match_id] = prediction;
+      // Запускаем синхронизацию
+      const result = await SyncService.autoSync();
+      
+      setSyncStatus({ 
+        success: result.success, 
+        message: result.success 
+          ? `Синхронизировано ${result.predictions.syncedCount} прогнозов` 
+          : 'Ошибка синхронизации: ' + result.message
       });
       
-      setUserPredictions(predictionsMap);
-    } catch (err) {
-      console.error('Error fetching user predictions:', err);
+      // Перезагружаем прогнозы
+      const predictions = await SyncService.fetchUserPredictions();
+      setUserPredictions(predictions);
+    } catch (error) {
+      setSyncStatus({ 
+        success: false, 
+        message: 'Ошибка синхронизации: ' + error.message 
+      });
+    } finally {
+      setIsSyncing(false);
+      
+      // Автоматически скрываем статус через 5 секунд
+      setTimeout(() => {
+        setSyncStatus(null);
+      }, 5000);
     }
   };
 
-// Обработка отправки прогноза
-const handlePredictionSubmit = async (matchId, homeScore, awayScore, comment) => {
-  if (!isLoggedIn) {
-    alert('Пожалуйста, войдите в систему, чтобы делать прогнозы');
-    navigate('/login');
-    return;
-  }
-
-  try {
-    const token = localStorage.getItem('access_token');
-    const existingPrediction = userPredictions[matchId];
-
-    let url;
-    let method;
-
-    if (existingPrediction) {
-      url = `http://localhost:5000/api/predictions/${existingPrediction.id}`;
-      method = 'PUT';
-    } else {
-      url = `http://localhost:5000/api/predictions/${matchId}`;
-      method = 'POST';
+  // Обработка отправки прогноза
+  const handlePredictionSubmit = async (matchId, homeScore, awayScore, comment) => {
+    if (!isLoggedIn) {
+      alert('Пожалуйста, войдите в систему, чтобы делать прогнозы');
+      navigate('/login');
+      return;
     }
 
-    const requestData = {
-      home_score: parseInt(homeScore),
-      away_score: parseInt(awayScore),
-      comment: comment || '',
-    };
-
-    console.log(`Отправка ${method} запроса на ${url} с данными:`, requestData);
-
-    const response = await fetch(url, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(requestData)
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      let errorMessage;
-
-      try {
-        const errorData = JSON.parse(errorText);
-        errorMessage = errorData.message || errorData.msg || errorData.error || errorText;
-      } catch (e) {
-        errorMessage = errorText;
+    try {
+      // Используем SyncService для отправки прогноза
+      const result = await SyncService.submitPrediction(
+        matchId, 
+        homeScore, 
+        awayScore, 
+        comment
+      );
+      
+      if (!result.success) {
+        throw new Error(result.message);
       }
-
-      console.error(`Ошибка ${response.status}: ${errorMessage}`);
-      throw new Error(`Ошибка сервера: ${response.status}. ${errorMessage}`);
+      
+      // Обновляем локальное состояние
+      setUserPredictions(prev => ({
+        ...prev,
+        [matchId]: result.data
+      }));
+      
+      // Показываем сообщение
+      alert(result.isLocal 
+        ? 'Прогноз сохранен локально и будет отправлен на сервер при следующей синхронизации.' 
+        : 'Ваш прогноз успешно сохранен!'
+      );
+      
+      return result.data;
+    } catch (err) {
+      console.error('Ошибка при сохранении прогноза:', err);
+      alert(`Не удалось сохранить прогноз: ${err.message || 'Неизвестная ошибка'}`);
+      throw err;
     }
+  };
 
-    const responseData = await response.json().catch(() => ({}));
-    console.log('Успешный ответ:', responseData);
-
-    await fetchUserPredictions();
-    alert('Ваш прогноз сохранен!');
-
-    return responseData;
-  } catch (err) {
-    console.error('Полная ошибка:', err);
-    const errorMessage = err.message || err.error || 'Неизвестная ошибка';
-    alert(`Не удалось сохранить прогноз: ${errorMessage}`);
-    throw err;
-  }
-};
   // Преобразование даты в удобный формат
   const formatDate = (dateString) => {
     const options = { 
@@ -184,8 +182,12 @@ const handlePredictionSubmit = async (matchId, homeScore, awayScore, comment) =>
       <Header />
       
       <div className="predictions-container">
-        <h1>Болжамдар</h1>
-        <p className="subtitle">Келесі матчтарға өз болжамыңызды жасаңыз</p>
+        <div className="predictions-header">
+          <div>
+            <h1>Болжамдар</h1>
+            <p className="subtitle">Келесі матчтарға өз болжамыңызды жасаңыз</p>
+          </div>
+        </div>
         
         {!isLoggedIn && (
           <div className="login-prompt">
@@ -238,6 +240,7 @@ const handlePredictionSubmit = async (matchId, homeScore, awayScore, comment) =>
                       existingPrediction={userPredictions[match.id]}
                       isLoggedIn={isLoggedIn}
                       onSubmit={handlePredictionSubmit}
+                      isOfflineMode={userPredictions[match.id]?.is_local_only}
                     />
                   </div>
                 </div>

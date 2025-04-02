@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/PredictionForm.css';
 
-const PredictionForm = ({ matchId, homeTeam, awayTeam, existingPrediction, isLoggedIn, onSubmit }) => {
+const PredictionForm = ({ 
+  matchId, 
+  homeTeam, 
+  awayTeam, 
+  existingPrediction, 
+  isLoggedIn, 
+  onSubmit,
+  isOfflineMode = false 
+}) => {
   const [homeScore, setHomeScore] = useState('');
   const [awayScore, setAwayScore] = useState('');
   const [comment, setComment] = useState('');
@@ -57,8 +65,7 @@ const PredictionForm = ({ matchId, homeTeam, awayTeam, existingPrediction, isLog
     try {
       setIsSubmitting(true);
       
-      // Передаем строковые значения в родительский компонент,
-      // чтобы сохранить совместимость с исходным кодом
+      // Передаем значения в родительский компонент
       await onSubmit(matchId, homeScore, awayScore, comment);
       setIsEditing(false);
     } catch (error) {
@@ -79,7 +86,7 @@ const PredictionForm = ({ matchId, homeTeam, awayTeam, existingPrediction, isLog
   return (
     <div className="prediction-form-container">
       {existingPrediction && !isEditing ? (
-        <div className="existing-prediction">
+        <div className={`existing-prediction ${isOfflineMode ? 'offline-mode' : ''}`}>
           <div className="prediction-score">
             <span className="team-short">{homeTeam.substring(0, 3).toUpperCase()}</span>
             <span className="score">{existingPrediction.home_score} - {existingPrediction.away_score}</span>
@@ -89,6 +96,12 @@ const PredictionForm = ({ matchId, homeTeam, awayTeam, existingPrediction, isLog
           {existingPrediction.comment && (
             <div className="prediction-comment">
               <p>"{existingPrediction.comment}"</p>
+            </div>
+          )}
+          
+          {isOfflineMode && (
+            <div className="offline-indicator">
+              <span>Деректер сақталды</span>
             </div>
           )}
           

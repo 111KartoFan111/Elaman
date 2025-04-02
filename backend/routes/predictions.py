@@ -128,3 +128,69 @@ def get_user_predictions():
     except Exception as e:
         current_app.logger.error(f"Unexpected error in get_user_predictions(): {str(e)}")
         return jsonify({'message': 'Произошла непредвиденная ошибка', 'error': str(e)}), 500
+
+@predictions_bp.route('/<int:match_id>', methods=['POST'])
+@jwt_required()
+def create_prediction(match_id):
+    current_user_id = get_jwt_identity()
+    data = request.get_json()
+
+    # Проверка существования матча
+    match = Match.query.get(match_id)
+    if not match:
+        return jsonify({'message': 'Матч не найден'}), 404
+
+    # Проверка, что матч еще не начался
+    if match.match_date < datetime.utcnow():
+        return jsonify({'message': 'Нельзя делать прогноз на прошедший матч'}), 400
+
+    # Проверка, что прогноз еще не существует
+    existing = Prediction.query.filter_by(user_id=current_user_id, match_id=match_id).first()
+    if existing:
+        return jsonify({'message': 'Прогноз для этого матча уже существует'}), 400
+
+    prediction = Prediction(
+        user_id=current_user_id,
+        match_id=match_id,
+        home_score=data.get('home_score'),
+        away_score=data.get('away_score'),
+        comment=data.get('comment', '')
+    )
+    db.session.add(prediction)
+    db.session.commit()
+
+    return jsonify({
+        'id': prediction.id,
+        'match_id': prediction.match_id,
+        'home_score': prediction.home_score,
+        'away_score': prediction.away_score,
+        'comment': prediction.comment
+    }), 201
+
+@predictions_bp.route('/<int:prediction_id>', methods=['PUT'])
+@jwt_required()
+def update_prediction(prediction_id):
+    current_user_id = get_jwt_identity()
+    prediction = Prediction.query.get(prediction_id)
+
+    if not prediction or prediction.user_id != current_user_id:
+        return jsonify({'message': 'Прогноз не найден или доступ запрещен'}), 404
+
+    # Проверка, что матч еще не начался
+    match = Match.query.get(prediction.match_id)
+    if match.match_date < datetime.utcnow():
+        return jsonify({'message': 'Нельзя редактировать прогноз после начала матча'}), 400
+
+    data = request.get_json()
+    prediction.home_score = data.get('home_score', prediction.home_score)
+    prediction.away_score = data.get('away_score', prediction.away_score)
+    prediction.comment = data.get('comment', prediction.comment)
+    db.session.commit()
+
+    return jsonify({
+        'id': prediction.id,
+        'match_id': prediction.match_id,
+        'home_score': prediction.home_score,
+        'away_score': prediction.away_score,
+        'comment': prediction.comment
+    }), 200
